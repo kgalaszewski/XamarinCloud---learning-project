@@ -16,35 +16,31 @@
 	<EditText
 		android:id="@+id/Type"
 		android:hint="Type of Animal"
-		android:layout_marginTop="10dp"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"/>
 
 	<EditText
 		android:id="@+id/Breed"
 		android:hint="Breed of Animal"
-		android:layout_marginTop="10dp"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"/>
 
 	<EditText
 		android:id="@+id/Name"
 		android:hint="Name of Animal"
-		android:layout_marginTop="10dp"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"/>
 
 	<EditText
 		android:id="@+id/Info"
 		android:hint="Information about Animal"
-		android:layout_marginTop="10dp"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"/>
 
 	<Button
 		android:id="@+id/saveButton"
 		android:text="ADD TO WIKI"
-		android:layout_marginTop="20dp"
+		android:layout_marginTop="10dp"
 		android:layout_width="match_parent"
 		android:layout_height="40dp"/>
 
@@ -54,18 +50,9 @@
 		android:layout_width="match_parent"
 		android:layout_height="40dp"/>
 
-	<TextView
-		android:gravity="center"
-		android:text="Check out current Animal Info"
-		android:layout_marginTop="25dp"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"/>
-
-	<TextView
-		android:id="@+id/AllInfo"
-		android:gravity="center"
-		android:text="Info should be placed here"
-		android:layout_marginTop="15dp"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"/>
+	<android.support.v7.widget.RecyclerView
+	android:layout_height="match_parent"
+	android:layout_width="match_parent"
+	android:scrollbars="vertical"
+	android:id="@+id/dataRecyclerView"	/>
 </LinearLayout>

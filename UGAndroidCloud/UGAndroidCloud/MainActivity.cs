@@ -8,20 +8,32 @@ using Firebase;
 using Java.Util;
 using Android.Content;
 using System.Threading.Tasks;
+using Android.Gms.Tasks;
+using Java.Lang;
+using UGAndroidCloud.Models;
+using System.Collections.Generic;
+using Android.Support.V7.Widget;
+using UGAndroidCloud.Adapters;
 
 namespace UGAndroidCloud
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
-    public class MainActivity : AppCompatActivity
+    public class MainActivity : AppCompatActivity, IOnSuccessListener
     {
         EditText Type;
         EditText Breed;
         EditText Name;
         EditText Info;
-        EditText AllInfo;
+        //EditText AllInfo;
         Button saveButton;
-        Button refreshButton;
+        //Button refreshButton;
+        RecyclerView recyclerView;
+
+        DataAdapter dataAdapter;
+
         FirebaseFirestore database;
+        List<InfoModel> listOfInfos = new List<InfoModel>();
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -29,7 +41,10 @@ namespace UGAndroidCloud
             SetContentView(Resource.Layout.activity_main);
             ConnectViews();
             database = GetDataBase(); // z tym moze byc problem, musialem deklarowac typ, powinien byc wczesniej?
-            AllInfo.Text = GetAllCurrentInfo();
+            //AllInfo.Text = GetAllCurrentInfo();
+
+            FetchData();
+            SetuprecyclerView();
         }
 
         void ConnectViews()
@@ -38,17 +53,30 @@ namespace UGAndroidCloud
             Breed = (EditText)FindViewById(Resource.Id.Breed);
             Name = (EditText)FindViewById(Resource.Id.Name);
             Info = (EditText)FindViewById(Resource.Id.Info);
-            AllInfo = (EditText)FindViewById(Resource.Id.AllInfo);
+            //AllInfo = (EditText)FindViewById(Resource.Id.AllInfo);
             saveButton = (Button)FindViewById(Resource.Id.saveButton);
-            refreshButton = (Button)FindViewById(Resource.Id.refreshButton);
+            //refreshButton = (Button)FindViewById(Resource.Id.refreshButton);
+            recyclerView = (RecyclerView)FindViewById(Resource.Id.dataRecyclerView);
             
             saveButton.Click += SaveButton_Click;
-            refreshButton.Click += RefreshButton_Click;
+           // refreshButton.Click += RefreshButton_Click;
         }
 
         public string GetAllCurrentInfo()
         {
             return "";
+        }
+
+        void FetchData()
+        {
+            database.Collection("Infos").Get().AddOnSuccessListener(this);
+        }
+
+        void SetuprecyclerView()
+        {
+            recyclerView.SetLayoutManager(new LinearLayoutManager(recyclerView.Context));
+            dataAdapter = new DataAdapter(listOfInfos);
+            recyclerView.SetAdapter(dataAdapter);
         }
 
         //public async Task<string> GetAllCurrentInfo()
@@ -72,24 +100,47 @@ namespace UGAndroidCloud
 
         private void RefreshButton_Click(object sender, System.EventArgs e)
         {
-            AllInfo.Text = GetAllCurrentInfo();
+            //AllInfo.Text = GetAllCurrentInfo();
         }
 
         public FirebaseFirestore GetDataBase()
         {
             FirebaseFirestore database;
 
-            var options = new FirebaseOptions.Builder().SetProjectId("TU MA BYC PROJECT_ID Z PLIKU GOOGLE-SERVICES.JSON")
-                .SetApplicationId("to samo")
-                .SetApiKey("CURRENT_KEY z tego samego pliku")
-                .SetDatabaseUrl("FIREBASE_URL z tego samego pliku")
-                .SetStorageBucket("STORAGE_BUCKET z tego samego").
+            var options = new FirebaseOptions.Builder().SetProjectId("ugandroidcloudwikiprojectt")
+                .SetApplicationId("ugandroidcloudwikiprojectt")
+                .SetApiKey("AIzaSyCBm-SJ2o0O-CmpdsaIwwKlkVnx3zAYwRM")
+                .SetDatabaseUrl("https://ugandroidcloudwikiprojectt.firebaseio.com")
+                .SetStorageBucket("ugandroidcloudwikiprojectt.appspot.com").
                 Build();
 
             var app = FirebaseApp.InitializeApp(this, options);
             database = FirebaseFirestore.GetInstance(app);
 
             return database;
+        }
+
+        public void OnSuccess(Object result)
+        {
+            var snapshot = (QuerySnapshot)result;
+
+            if(!snapshot.IsEmpty)
+            {
+                var documents = snapshot.Documents;
+
+                listOfInfos.Clear();
+                foreach (var item in documents)
+                {
+                    InfoModel info = new InfoModel();
+
+                    info.Type = item.Get("Type").ToString();
+                    info.Breed = item.Get("Breed").ToString();
+                    info.Name = item.Get("Name").ToString();
+                    info.Info = item.Get("Info").ToString();
+
+                    listOfInfos.Add(info);
+                }
+            }
         }
     }
 }
