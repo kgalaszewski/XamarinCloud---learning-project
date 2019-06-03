@@ -1,0 +1,6 @@
+https://www.youtube.com/watch?v=mneY6H0zMNE
+1* Cala procedura firebase
+2* Potem w 12:55 wykorzystac plik pobrany w 1*
+3* Weryfikacja od 21:30
+
+https://firebase.google.com/docs/firestore/query-data/get-data
